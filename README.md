@@ -1,3 +1,7 @@
 # aws-edr-configuration
 AWS Elastic Disaster Recovery Setup
 This repository provides steps to automate the setup of AWS Elastic Disaster Recovery (EDR) for all customers, including new ones.
+
+Reference: 
+1. https://docs.aws.amazon.com/drs/latest/userguide/what-is-drs.html
+2. https://medium.com/zen-enterprise/how-to-use-aws-elastic-disaster-recovery-service-aws-drs-8927b102f8f2
