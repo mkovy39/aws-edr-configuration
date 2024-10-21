@@ -1,0 +1,77 @@
+AWS Elastic Disaster Recovery Setup
+
+Two main parts of AWS Elastic Disaster Recovery:
+1. DRS Configuration in Recovery Region
+2. Replication Agent Configuration in Instances
+
+ 1. DRS Configuration
+
+1. Navigate to the AWS Elastic Disaster Recovery (AWS DRS) section in the AWS Management Console.
+2. You can use the default settings by choosing Next on each page of the wizard or modify settings as needed.
+3. Specify the following:
+    - Subnets and Instance Type for the replication server:
+        - Staging area subnet.
+        - Replication server instance type.
+    - Volumes and Security Groups:
+        - Automatically replicate new disks/specific disks.
+        - EBS (Elastic Block Store) Volume type: Faster general-purpose SSD (gp3).
+        - Encryption: Default/specific encryption.
+        - Security groups: Select Always use AWS Elastic Disaster Recovery security group/specific security group for EDR (Permissions: 443 TCP, 1500).
+
+4. Click Next.
+5. Choose public/private IP for the replication server:
+    - For Private IP, ensure a connection between the replication server VPC and source server VPC.
+6. Specify additional settings:
+    - Network Bandwidth Throttling (per server, in Mbps).
+    - Point in Time (PIT) policy – specify PIT in Days.
+    - Tags.
+    - Launch Template for the source server launched in the DR region.
+    - Automated Launch Settings:
+        - Instance settings.
+        - Licensing.
+
+7. Set default EC2 Launch Template for the DR region:
+    - Subnet (free text).
+    - Security groups.
+    - Instance type.
+    - EBS volume type.
+
+8. Advanced Settings:
+    - IAM instance profile.
+    - Tenancy.
+    - Key pair.
+    - Other options: Default/specific for DR instance.
+
+9. Review and initialize:
+    - Configure and Initialize.
+
+
+
+2. Replication Agent Installation and Configuration
+
+For Linux:
+1. Access the EC2 console and select the EC2 instance.
+2. Modify the IAM role by selecting Actions > Security > Modify IAM Role, or use the AWS Access Key ID and Secret Access Key.
+3. Use a role containing the `AWSElasticDisasterRecoveryEc2InstancePolicy` policy.
+4. SSH into the instance and install the replication agent:
+    - Download agent from: 
+      wget -O ./aws-replication-installer-init https://aws-elastic-disaster-recovery-<REGION>.s3.<REGION>.amazonaws.com/latest/linux/aws-replication-installer-init
+    - Note: Replace `<REGION>` with the AWS region.
+    
+    - Execute permission: 
+      chmod +x aws-replication-installer-init
+      
+    - Run the Python script: 
+      sudo ./aws-replication-installer-init
+    
+5. Enter AWS Region Name, Access Key ID, and Secret Access Key when prompted.
+
+6. Select disks to replicate. The agent will handle the initial sync process, and the server will appear in the AWS Elastic Disaster Recovery console.
+
+For Windows:
+1. Download the replication agent installer:
+    https://aws-elastic-disaster-recovery-<REGION>.s3.<REGION>.amazonaws.com/latest/windows/AwsReplicationWindowsInstaller.exe
+    Note: Replace `<REGION>` with the AWS region.
+2. Run the installer as an administrator.
+3. Enter AWS Region Name, Access Key ID, and Secret Access Key when prompted.
+4. Select disks to replicate. The agent will handle the initial sync process, and the server will appear in the AWS Elastic Disaster Recovery console.
